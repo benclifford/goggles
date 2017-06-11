@@ -78,7 +78,7 @@ void loop_3() {
     for(byte off=0; off<7; off++) {
       // TODO: I think pow uses quite a lot of ROM because it is doing floats
       // and actually we need something much less accurate.
-      byte amt = pow(2, off+1);
+      byte amt = intpow(2, off+1);
       uint32_t green = strip.Color(0,amt,0);
       strip.setPixelColor((start + off) % 16, green);
       strip.setPixelColor(NUMLEDS - ((start + off) % 16 + 1), green);
@@ -91,8 +91,8 @@ void loop_3() {
 void loop_4() {
 
   for(int level=0;level < 8; level++) {
-    byte up = pow(2, level);
-    byte down = pow(2, 7-level);
+    byte up = intpow(2, level);
+    byte down = intpow(2, 7-level);
     uint32_t left = strip.Color(0,up,down);
     uint32_t right = strip.Color(up,down,0);
     for(byte pix=0; pix<16; pix++) {
@@ -104,5 +104,14 @@ void loop_4() {
     strip.show();
     delay(200);
   }
+}
+
+
+int intpow(int e, int n) {
+  int v = 1;
+  for(;n>0;n--) {
+    v *= e;
+  }
+  return v; 
 }
 
