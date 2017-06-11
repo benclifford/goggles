@@ -6,7 +6,7 @@
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUMLEDS, PIN, NEO_GRB + NEO_KHZ800);
 
-#define NUMMODES 4
+#define NUMMODES 5
 int mode=0;
 
 
@@ -31,6 +31,7 @@ void loop() {
     case 1: loop_2(); break;
     case 2: loop_3(); break;
     case 3: loop_4(); break;
+    case 4: loop_5(); break;
   }
 }
 
@@ -106,6 +107,57 @@ void loop_4() {
   }
 }
 
+void loop_5() {
+
+  int phase=0;
+  uint32_t black = strip.Color(0,0,0); 
+  uint32_t intercol = strip.Color(32,0,0);
+
+  while(1 == 1){
+    byte rot = phase / 32;
+    uint32_t blue = strip.Color(0,0,255); // TODO modulate
+    uint32_t lblue;
+    uint32_t rblue;
+    if((phase / 32) % 2 == 0) { lblue = blue; rblue = black; }
+       else {lblue = black; rblue = blue; }
+    
+    for(byte pixel = 0; pixel < 8; pixel++) {
+      strip.setPixelColor((pixel + rot) % 16, lblue);
+      strip.setPixelColor(31 - (pixel + rot) % 16, rblue);
+    }
+    strip.setPixelColor((8+rot)%16, intercol);
+    strip.setPixelColor(31 - (8+rot)%16, intercol);
+
+    int amber_intensity;
+    /*
+    if((phase / 8) % 2 == 0) {
+        amber_intensity = 1;
+    } else {
+      amber_intensity = 0;
+    }
+    */
+    amber_intensity = 1;
+    uint32_t amber = strip.Color(255 * amber_intensity, 64 * amber_intensity,0); // TODO modulate
+    
+    for(byte pixel = 9; pixel < 15; pixel++) {
+      uint32_t thisamber;
+      if((phase/4) % 6 == (pixel-9)) {
+        thisamber = amber; 
+      } else {
+        thisamber = black;
+      }
+      strip.setPixelColor((pixel + rot) % 16, thisamber);
+      strip.setPixelColor(31 - (pixel + rot) % 16, thisamber);
+    }
+    strip.setPixelColor((15 + rot)%16, intercol);
+    strip.setPixelColor(31-(15 + rot)%16, intercol);
+
+    // render and advance
+    phase = (phase + 1) % 1024;
+    strip.show();
+    delay(10);
+  }
+}
 
 int intpow(int e, int n) {
   int v = 1;
