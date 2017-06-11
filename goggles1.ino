@@ -111,7 +111,7 @@ void loop_5() {
 
   int phase=0;
   uint32_t black = strip.Color(0,0,0); 
-  uint32_t intercol = strip.Color(32,0,0);
+  uint32_t intercol = strip.Color(0,0,32);
 
   while(1 == 1){
     byte rot = phase / 32;
