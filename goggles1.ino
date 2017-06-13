@@ -236,8 +236,12 @@ void initRandom() {
 
   // now the generator is initialised safely, we can
   // generate a new seed to use next time.
-  EEPROM.write(1, nextRNGByte());
-  EEPROM.write(2, nextRNGByte());
+
+  nextRNGBit();
+
+  EEPROM.write(1, prng_register & 0xFF);
+  EEPROM.write(2, (prng_register & 0xFF00) >> 8);
+
 }
 
 byte nextRNGBit() {
