@@ -1,6 +1,12 @@
 #include <Adafruit_NeoPixel.h>
 #include <EEPROM.h>
 
+/* EEPROM usage:
+ *   byte 0: last used mode
+ *   byte 1: PRNG seed
+ *   byte 2: PRNG seed
+ */
+
 #define NUMLEDS 32
 #define PIN 1
 
@@ -21,8 +27,11 @@ void setup() {
   strip.begin();
   strip.show(); // Initialize all pixels to 'off
 
+  initRandom();
+
   mode = (EEPROM.read(0) + 1) % NUMMODES;
   EEPROM.write(0, mode);
+
 }
 
 void loop() {
@@ -40,7 +49,8 @@ byte pickPrimary(byte oldPrimary) {
   while(newPrimary == oldPrimary) {
     // using this random number generator is
     // pretty expensive - about 692 bytes.
-    newPrimary = random(0,6);
+    // newPrimary = random(0,6);
+    newPrimary = get3BitRandomLessThan(6);
   }
   return newPrimary;
 }
@@ -200,5 +210,65 @@ void setAllPixels(uint32_t colour) {
   for(byte pix=0; pix<NUMLEDS; pix++) {
     strip.setPixelColor(pix, colour);  
   }
+}
+
+
+uint16_t prng_register;
+#define PRNG_FEEDBACK 0xb400u
+
+void initRandom() {
+  uint16_t lsb = EEPROM.read(1);
+  uint16_t usb = EEPROM.read(2);
+  prng_register = (usb << 8) | lsb;
+  
+  // If the register is 0, we get a cycle of
+  // 0s out, rather than a pseudo-random sequence.
+  // If so, replace it with something non-zero.
+  // This might end up shortening the sequence of
+  // possible outputs by interacting with the
+  // pseudorandom sequence used for re-seeding in
+  // a particular way? But this will only happen
+  // if the pseudorandom sequence contains 16
+  // zeroes in a row (so as to make the above
+  // write zeroes into the EEPROM) or when the
+  // eeprom is freshly initialised to 0 from elsewhere.
+  if(prng_register == 0) prng_register=1;
+
+  // now the generator is initialised safely, we can
+  // generate a new seed to use next time.
+  EEPROM.write(1, nextRNGByte());
+  EEPROM.write(2, nextRNGByte());
+}
+
+byte nextRNGBit() {
+  // shift out an output bit
+  byte out = prng_register & 1;
+  prng_register >>= 1;
+
+  // apply feedback
+  if(out == 1) {
+    prng_register ^= PRNG_FEEDBACK; // from appropriate polynomial
+  }
+  
+  return out;
+}
+
+byte nextRNGByte() {
+  byte out = 0;
+  for(byte b = 0; b <8 ; b++) {
+    out = (out << 1) | nextRNGBit();
+  }
+  return out;
+}
+
+byte get3BitRandom() {
+  return nextRNGBit() | (nextRNGBit() << 1) | (nextRNGBit() << 2);
+}
+
+byte get3BitRandomLessThan(byte m) {
+  byte out;
+   do {
+     out = get3BitRandom();
+   } while(out >= m);
 }
 
