@@ -157,7 +157,7 @@ int intpow(int e, int n) {
   return v; 
 }
 
-void setPixelMirror(int pix, uint32_t colour) {
+void setPixelMirror(byte pix, uint32_t colour) {
   strip.setPixelColor(pix, colour);
   strip.setPixelColor(NUMLEDS - pix - 1, colour);
 }
