@@ -12,9 +12,10 @@
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUMLEDS, PIN, NEO_GRB + NEO_KHZ800);
 
-#define NUMMODES 5
+#define NUMMODES 6
 int mode=0;
 
+uint16_t prng_register;
 
 void setup() {
   // put your setup code here, to run once:
@@ -41,6 +42,7 @@ void loop() {
     case 2: loop_3(); break;
     case 3: loop_4(); break;
     case 4: loop_5(); break;
+    case 5: loop_6(); break;
   }
 }
 
@@ -193,6 +195,43 @@ void loop_5() {
   }
 }
 
+// show the PRNG shift register on one side - this should
+// sort-of rotate but with feedback happening.
+// and on the other side, set each LED in turn on or off
+// based on the result of generating one random bit
+// every time period. This one bit generation is also
+// what will drive the first side to rotate.
+void loop_6() {
+
+  uint32_t black = strip.Color(0,0,0);
+  uint32_t red = strip.Color(255,0,0);
+  uint32_t green = strip.Color(0,255,0);
+  
+  setAllPixels(black);
+  strip.show();
+
+  while(1==1) {
+    for(byte pix=0; pix<16; pix++) {
+      byte b = nextRNGBit();
+      if(b == 1) {
+        strip.setPixelColor(pix, red);
+      } else {
+        strip.setPixelColor(pix, black);
+      }
+      for(byte lsfr_pix=0; lsfr_pix<16; lsfr_pix++) {
+        byte lsfr_b = (prng_register >> lsfr_pix) & 1;
+        if(lsfr_b == 1) {
+          strip.setPixelColor(lsfr_pix + 16, green);
+        } else {
+          strip.setPixelColor(lsfr_pix + 16, black);
+        }
+      }
+      strip.show();
+      delay(100);
+    }    
+  }
+}
+
 int intpow(int e, int n) {
   int v = 1;
   for(;n>0;n--) {
@@ -213,7 +252,7 @@ void setAllPixels(uint32_t colour) {
 }
 
 
-uint16_t prng_register;
+
 #define PRNG_FEEDBACK 0xb400u
 
 void initRandom() {
