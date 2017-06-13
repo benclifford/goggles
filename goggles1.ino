@@ -81,8 +81,7 @@ void loop_3() {
       // and actually we need something much less accurate.
       byte amt = intpow(2, off+1);
       uint32_t green = strip.Color(0,amt,0);
-      strip.setPixelColor((start + off) % 16, green);
-      strip.setPixelColor(NUMLEDS - ((start + off) % 16 + 1), green);
+      setPixelMirror((start + off) % 16, green);
     }
     strip.show();
     delay(200);
@@ -125,8 +124,7 @@ void loop_5() {
       strip.setPixelColor((pixel + rot) % 16, lblue);
       strip.setPixelColor(31 - (pixel + rot) % 16, rblue);
     }
-    strip.setPixelColor((8+rot)%16, intercol);
-    strip.setPixelColor(31 - (8+rot)%16, intercol);
+    setPixelMirror((8+rot) % 16, intercol);
 
     int amber_intensity;
     /*
@@ -146,11 +144,10 @@ void loop_5() {
       } else {
         thisamber = black;
       }
-      strip.setPixelColor((pixel + rot) % 16, thisamber);
-      strip.setPixelColor(31 - (pixel + rot) % 16, thisamber);
+      setPixelMirror((pixel + rot) % 16, thisamber);
     }
-    strip.setPixelColor((15 + rot)%16, intercol);
-    strip.setPixelColor(31-(15 + rot)%16, intercol);
+    setPixelMirror((15 + rot) % 16, intercol);
+
 
     // render and advance
     phase = (phase + 1) % 1024;
@@ -167,3 +164,7 @@ int intpow(int e, int n) {
   return v; 
 }
 
+void setPixelMirror(int pix, uint32_t colour) {
+  strip.setPixelColor(pix, colour);
+  strip.setPixelColor(NUMLEDS - pix - 1, colour);
+}
