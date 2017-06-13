@@ -35,20 +35,54 @@ void loop() {
   }
 }
 
+byte pickPrimary(byte oldPrimary) {
+  byte newPrimary=oldPrimary;
+  while(newPrimary == oldPrimary) {
+    // using this random number generator is
+    // pretty expensive - about 692 bytes.
+    newPrimary = random(0,6);
+  }
+  return newPrimary;
+}
+
+uint32_t primaryToColour(byte primary) {
+  switch(primary) {
+    case 0: return strip.Color(  0,  0,255);
+    case 1: return strip.Color(  0,255,  0);
+    case 2: return strip.Color(  0,128,64);
+    case 3: return strip.Color(255,  0,  0);
+    case 4: return strip.Color(192,  0,192);
+    case 5: return strip.Color(255,128,  0);
+  }
+}
+
 void loop_1() {
 
-  uint32_t colour = strip.Color(0,0,15);
+  uint32_t colour = strip.Color(1,1,1);
   setAllPixels(colour);
 
   strip.show();
 
-  delay(1000);
-  
-  for(byte pix=0; pix<NUMLEDS; pix++) {
-    uint32_t colour = strip.Color(255,0,0);
-    strip.setPixelColor(pix, colour);
-    strip.show();
-    delay(1000);
+  byte leftPrimary=-1;
+  byte rightPrimary=-1;
+
+  while(1 == 1) {
+    leftPrimary=pickPrimary(leftPrimary);
+    uint32_t leftColour = primaryToColour(leftPrimary);
+    for(byte pix=0; pix<16; pix++) {
+      strip.setPixelColor(pix, leftColour);
+      strip.show();
+      delay(1000);
+    }
+    
+    rightPrimary=pickPrimary(rightPrimary);
+    uint32_t rightColour = primaryToColour(rightPrimary);
+    for(byte pix=16; pix<32; pix++) {
+      strip.setPixelColor(pix, rightColour);
+      strip.show();
+      delay(1000);
+    }
+    
   }
 }
 
