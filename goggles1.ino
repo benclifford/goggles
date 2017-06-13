@@ -38,9 +38,7 @@ void loop() {
 void loop_1() {
 
   uint32_t colour = strip.Color(0,0,15);
-  for(byte pix=0; pix<NUMLEDS; pix++) {
-    strip.setPixelColor(pix, colour);  
-  }
+  setAllPixels(colour);
 
   strip.show();
 
@@ -57,14 +55,10 @@ void loop_1() {
 void loop_2() {
   uint32_t black = strip.Color(0,0,0);
   uint32_t white = strip.Color(255,255,255);
-  for(byte pix=0; pix<NUMLEDS; pix++) {
-    strip.setPixelColor(pix, black);  
-  }
+  setAllPixels(black);
   strip.show();
   delay(3000);
-  for(byte pix=0; pix<NUMLEDS; pix++) {
-    strip.setPixelColor(pix, white);  
-  }
+  setAllPixels(white);
   strip.show();
   delay(500);
 }
@@ -73,9 +67,8 @@ void loop_3() {
   uint32_t black = strip.Color(0,0,0);
   
   for(byte start=0; start<16; start++) {
-    for(byte pix=0; pix<NUMLEDS; pix++) {
-      strip.setPixelColor(pix, black);  
-    }
+    setAllPixels(black);
+
     for(byte off=0; off<7; off++) {
       // TODO: I think pow uses quite a lot of ROM because it is doing floats
       // and actually we need something much less accurate.
@@ -168,3 +161,10 @@ void setPixelMirror(int pix, uint32_t colour) {
   strip.setPixelColor(pix, colour);
   strip.setPixelColor(NUMLEDS - pix - 1, colour);
 }
+
+void setAllPixels(uint32_t colour) {
+  for(byte pix=0; pix<NUMLEDS; pix++) {
+    strip.setPixelColor(pix, colour);  
+  }
+}
+
