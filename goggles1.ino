@@ -44,9 +44,9 @@ void loop() {
   }
 }
 
-byte pickPrimary(byte oldPrimary) {
+byte pickPrimary(byte oldPrimary, byte otherOldPrimary) {
   byte newPrimary=oldPrimary;
-  while(newPrimary == oldPrimary) {
+  while(newPrimary == oldPrimary || newPrimary == otherOldPrimary) {
     // using this random number generator is
     // pretty expensive - about 692 bytes.
     // newPrimary = random(0,6);
@@ -77,7 +77,7 @@ void loop_1() {
   byte rightPrimary=-1;
 
   while(1 == 1) {
-    leftPrimary=pickPrimary(leftPrimary);
+    leftPrimary=pickPrimary(leftPrimary, rightPrimary);
     uint32_t leftColour = primaryToColour(leftPrimary);
     for(byte pix=0; pix<16; pix++) {
       strip.setPixelColor(pix, leftColour);
@@ -85,7 +85,7 @@ void loop_1() {
       delay(1000);
     }
     
-    rightPrimary=pickPrimary(rightPrimary);
+    rightPrimary=pickPrimary(rightPrimary, leftPrimary);
     uint32_t rightColour = primaryToColour(rightPrimary);
     for(byte pix=16; pix<32; pix++) {
       strip.setPixelColor(pix, rightColour);
