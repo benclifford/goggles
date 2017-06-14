@@ -12,7 +12,7 @@
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUMLEDS, PIN, NEO_GRB + NEO_KHZ800);
 
-#define NUMMODES 6
+#define NUMMODES 7
 int mode=0;
 
 uint16_t prng_register;
@@ -43,6 +43,7 @@ void loop() {
     case 3: loop_4(); break;
     case 4: loop_5(); break;
     case 5: loop_6(); break;
+    case 6: loop_7(); break;
   }
 }
 
@@ -229,6 +230,38 @@ void loop_6() {
       strip.show();
       delay(100);
     }    
+  }
+}
+
+void loop_7() {
+  int pixs[32];
+  for(byte b=0; b<32; b++) {
+    pixs[b] = 7;
+  }
+  while(1==1) {
+    // TODO: adjust
+    byte adj_pix = nextRNGByte() % 32;
+    byte updown = nextRNGBit() ;
+    if(updown == 1 && pixs[adj_pix] < 15) {
+      pixs[adj_pix]++;
+    } else if(pixs[adj_pix]>0) {
+      pixs[adj_pix]--;
+    }
+    // now update the LEDs
+    for(byte pix = 0; pix < 32; pix++) {
+      byte heat = pixs[pix];
+      uint32_t colour;
+      if(heat == 0) { // off
+        colour = strip.Color(0,0,0);
+      } else if(heat < 8) { // red 
+        colour = strip.Color(intpow(2,heat - 1), 0, 0);
+      } else if(heat < 16) { // yellow
+        colour = strip.Color(255,intpow(2, heat - 9), 0);
+      } // ... otherwise something's awry
+      strip.setPixelColor(pix, colour);
+    }
+    strip.show();
+    delay(50);
   }
 }
 
