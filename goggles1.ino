@@ -186,7 +186,7 @@ void loop_police() {
     
     for(byte pixel = 9; pixel < 15; pixel++) {
       uint32_t thisamber;
-      if((phase/4) % 6 == (pixel-9)) {
+      if((5- (phase/4) % 6) == (pixel-9)) {
         thisamber = amber; 
       } else {
         thisamber = black;
