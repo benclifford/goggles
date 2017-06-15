@@ -38,15 +38,15 @@ void setup() {
 
 void loop() {
   switch(mode) {
-    case 0: loop_1(); break;
-    case 1: loop_2(); break;
-    case 2: loop_3(); break;
-    case 3: loop_4(); break;
-    case 4: loop_5(); break;
-    case 5: loop_6(); break;
-    case 6: loop_7(); break;
-    case 7: loop_8(); break;
-    default: mode=0; 
+    case 0: loop_slow_primary_fill(); break;
+    case 1: loop_white_flash(); break;
+    case 2: loop_green_swirl(); break;
+    case 3: loop_pulse_lr_colours(); break;
+    case 4: loop_police(); break;
+    case 5: loop_prng(); break;
+    case 6: loop_campfire(); break;
+    case 7: loop_rainbow(); break;
+    default: mode=0;
              EEPROM.write(0, 1);
       break;
   }
@@ -74,7 +74,7 @@ uint32_t primaryToColour(byte primary) {
   }
 }
 
-void loop_1() {
+void loop_slow_primary_fill() {
 
   uint32_t colour = strip.Color(1,1,1);
   setAllPixels(colour);
@@ -104,7 +104,7 @@ void loop_1() {
   }
 }
 
-void loop_2() {
+void loop_white_flash() {
   uint32_t black = strip.Color(0,0,0);
   uint32_t white = strip.Color(255,255,255);
   setAllPixels(black);
@@ -115,7 +115,7 @@ void loop_2() {
   delay(500);
 }
 
-void loop_3() {
+void loop_green_swirl() {
   uint32_t black = strip.Color(0,0,0);
   
   for(byte start=0; start<16; start++) {
@@ -133,7 +133,7 @@ void loop_3() {
   }
 }
 
-void loop_4() {
+void loop_pulse_lr_colours() {
 
   for(int level=0;level < 8; level++) {
     byte up = intpow(2, level);
@@ -151,7 +151,7 @@ void loop_4() {
   }
 }
 
-void loop_5() {
+void loop_police() {
 
   int phase=0;
   uint32_t black = strip.Color(0,0,0); 
@@ -207,7 +207,7 @@ void loop_5() {
 // based on the result of generating one random bit
 // every time period. This one bit generation is also
 // what will drive the first side to rotate.
-void loop_6() {
+void loop_prng() {
 
   uint32_t black = strip.Color(0,0,0);
   uint32_t red = strip.Color(255,0,0);
@@ -238,7 +238,7 @@ void loop_6() {
   }
 }
 
-void loop_7() {
+void loop_campfire() {
   int pixs[32];
   for(byte b=0; b<32; b++) {
     pixs[b] = 7;
@@ -270,7 +270,7 @@ void loop_7() {
   }
 }
 
-void loop_8() {
+void loop_rainbow() {
   byte col = 0;
   byte pix = 0;
   while(1==1) {
