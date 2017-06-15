@@ -1,0 +1,9 @@
+This sketch will display a number of different
+patterns on a pair of AdaFruit NeoPixel goggles,
+https://www.adafruit.com/product/2221
+
+Every time the goggles are powered up, they will
+cycle to the next pattern in sequence. To move
+onto the next pattern, press the reset button
+and wait a few second.
+
