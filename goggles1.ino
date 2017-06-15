@@ -12,7 +12,6 @@
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUMLEDS, PIN, NEO_GRB + NEO_KHZ800);
 
-#define NUMMODES 8
 int mode=0;
 
 uint16_t prng_register;
@@ -30,8 +29,10 @@ void setup() {
 
   initRandom();
 
-  mode = (EEPROM.read(0) + 1) % NUMMODES;
-  EEPROM.write(0, mode);
+  // this will be rolled over by loop() once it passes
+  // the last mode
+  mode = (EEPROM.read(0));
+  EEPROM.write(0, mode+1);
 
 }
 
@@ -45,6 +46,9 @@ void loop() {
     case 5: loop_6(); break;
     case 6: loop_7(); break;
     case 7: loop_8(); break;
+    default: mode=0; 
+             EEPROM.write(0, 1);
+      break;
   }
 }
 
