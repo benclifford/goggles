@@ -158,7 +158,9 @@ void loop_police() {
   uint32_t intercol = strip.Color(0,0,32);
 
   while(1 == 1){
-    byte rot = phase / 32;
+    byte rot = phase / (4*6); // needs to be a multiple of 6 so that
+                              // rotations do not happen out of phase
+                              // with the amber dots
     uint32_t blue = strip.Color(0,0,255); // TODO modulate
     uint32_t lblue;
     uint32_t rblue;
@@ -195,7 +197,9 @@ void loop_police() {
 
 
     // render and advance
-    phase = (phase + 1) % 1024;
+    // this needs to be a common multiple of all relevant phases
+    // otherwise we get jumps at rollover.
+    phase = (phase + 1) % (1024 * 6);
     strip.show();
     delay(10);
   }
