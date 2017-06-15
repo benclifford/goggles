@@ -12,7 +12,7 @@
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUMLEDS, PIN, NEO_GRB + NEO_KHZ800);
 
-#define NUMMODES 7
+#define NUMMODES 8
 int mode=0;
 
 uint16_t prng_register;
@@ -44,6 +44,7 @@ void loop() {
     case 4: loop_5(); break;
     case 5: loop_6(); break;
     case 6: loop_7(); break;
+    case 7: loop_8(); break;
   }
 }
 
@@ -262,6 +263,18 @@ void loop_7() {
     }
     strip.show();
     delay(50);
+  }
+}
+
+void loop_8() {
+  byte col = 0;
+  byte pix = 0;
+  while(1==1) {
+    setPixelMirror(pix, primaryToColour(col));
+    col = (col + 1) % 6;
+    pix = (pix + 1) % 16;
+    strip.show();
+    delay(166); // will give us one swizzle per second with 6 colours
   }
 }
 
