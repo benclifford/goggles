@@ -50,6 +50,7 @@ void loop() {
     case 7: loop_rainbow(); break;
     case 8: loop_amber_lr_pulse(); break;
     case 9: loop_rainbow_on_off(); break;
+    case 10: loop_colour_swizz(); break;
     default: mode=0;
              EEPROM.write(0, 1);
       break;
@@ -330,6 +331,29 @@ void loop_rainbow_on_off() {
         delay(166);
       }
     }
+  }
+}
+
+void loop_colour_swizz()  {
+  for(byte offset=0; offset<16; offset++) {
+    for(byte pix = 0; pix < 3; pix++) {
+      setPixelMirror((offset + pix) % 16, primaryToColour(1));
+    }
+    setPixelMirror((offset + 3) % 16, black);
+    for(byte pix = 4; pix < 7; pix++) {
+      setPixelMirror((offset + pix) % 16, primaryToColour(0));
+    }
+    setPixelMirror((offset + 7) % 16, black);
+    for(byte pix = 8; pix < 11; pix++) {
+      setPixelMirror((offset + pix) % 16, primaryToColour(3));
+    }
+    setPixelMirror((offset + 11) % 16, black);
+    for(byte pix = 12; pix < 15; pix++) {
+      setPixelMirror((offset + pix) % 16, primaryToColour(4));
+    }
+    setPixelMirror((offset + 15) % 16, black);
+    strip.show();
+    delay(100);
   }
 }
 
