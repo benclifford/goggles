@@ -12,7 +12,7 @@
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUMLEDS, PIN, NEO_GRB + NEO_KHZ800);
 
-int mode=0;
+byte mode=0;
 
 uint16_t prng_register;
 
