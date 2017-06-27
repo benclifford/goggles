@@ -137,7 +137,7 @@ void loop_green_swirl() {
 
 void loop_pulse_lr_colours() {
 
-  for(int level=0;level < 8; level++) {
+  for(byte level=0;level < 8; level++) {
     byte up = intpow(2, level);
     byte down = intpow(2, 7-level);
     uint32_t left = strip.Color(0,up,down);
@@ -155,7 +155,7 @@ void loop_pulse_lr_colours() {
 
 void loop_police() {
 
-  int phase=0;
+  uint16_t phase=0;
   uint32_t intercol = strip.Color(0,0,32);
 
   while(1 == 1){
@@ -174,7 +174,7 @@ void loop_police() {
     }
     setPixelMirror((8+rot) % 16, intercol);
 
-    int amber_intensity;
+    byte amber_intensity;
     /*
     if((phase / 8) % 2 == 0) {
         amber_intensity = 1;
@@ -338,8 +338,8 @@ void loop_rainbow_on_off() {
   }
 }
 
-int intpow(int e, int n) {
-  int v = 1;
+byte intpow(byte e, byte n) {
+  byte v = 1;
   for(;n>0;n--) {
     v *= e;
   }
