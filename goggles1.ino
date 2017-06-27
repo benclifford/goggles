@@ -249,7 +249,7 @@ void loop_campfire() {
   }
   while(1==1) {
     // TODO: adjust
-    byte adj_pix = nextRNGByte() % 32;
+    byte adj_pix = nextRNGBits(5);
     byte updown = nextRNGBit() ;
     if(updown == 1 && pixs[adj_pix] < 15) {
       pixs[adj_pix]++;
@@ -317,7 +317,7 @@ void loop_rainbow_on_off() {
 
   byte col = 0;
   for(byte offset=0; offset<32; offset+=16) {
-    byte rot = nextRNGByte() % 16;
+    byte rot = nextRNGBits(4);
     byte dir = nextRNGBit();
     for(byte pix=0;pix<16;pix++) {
       byte phys_pix = (pix + rot) % 16;
@@ -403,15 +403,19 @@ byte nextRNGBit() {
 }
 
 byte nextRNGByte() {
+  return nextRNGBits(8);
+}
+
+byte nextRNGBits(byte c) {
   byte out = 0;
-  for(byte b = 0; b <8 ; b++) {
+  for(byte b = 0; b < c ; b++) {
     out = (out << 1) | nextRNGBit();
   }
   return out;
 }
 
 byte get3BitRandom() {
-  return nextRNGBit() | (nextRNGBit() << 1) | (nextRNGBit() << 2);
+  return nextRNGBits(3);
 }
 
 byte get3BitRandomLessThan(byte m) {
