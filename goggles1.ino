@@ -174,16 +174,7 @@ void loop_police() {
     }
     setPixelMirror((8+rot) % 16, intercol);
 
-    byte amber_intensity;
-    /*
-    if((phase / 8) % 2 == 0) {
-        amber_intensity = 1;
-    } else {
-      amber_intensity = 0;
-    }
-    */
-    amber_intensity = 1;
-    uint32_t amber = strip.Color(255 * amber_intensity, 64 * amber_intensity,0); // TODO modulate
+    uint32_t amber = strip.Color(255, 64, 0);
     
     for(byte pixel = 9; pixel < 15; pixel++) {
       uint32_t thisamber;
