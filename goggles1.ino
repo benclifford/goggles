@@ -46,6 +46,7 @@ void loop() {
     case 5: loop_prng(); break;
     case 6: loop_campfire(); break;
     case 7: loop_rainbow(); break;
+    case 8: loop_amber_lr_pulse(); break;
     default: mode=0;
              EEPROM.write(0, 1);
       break;
@@ -283,6 +284,34 @@ void loop_rainbow() {
     pix = (pix + 1) % 16;
     strip.show();
     delay(166); // will give us one swizzle per second with 6 colours
+  }
+}
+
+void loop_amber_lr_pulse() {
+  for(byte offset=0; offset < 32; offset +=16) {
+    for(byte level=1;level < 8; level++) {
+      byte up = intpow(2, level);
+      uint32_t left = strip.Color(up,up/2,0);
+      for(byte pix=0; pix<16; pix++) {
+        strip.setPixelColor(pix+offset, left);
+      }
+      strip.show();
+      delay(80);
+    }
+    delay(200);
+    for(byte level=8;level > 1; level--) {
+      byte up = intpow(2, level-1);
+      uint32_t left = strip.Color(up,up/2,0);
+      for(byte pix=0; pix<16; pix++) {
+        strip.setPixelColor(pix+offset, left);
+      }
+      strip.show();
+      delay(120);
+    }
+    for(byte pix=0; pix<16; pix++) {
+      uint32_t black = strip.Color(0,0,0);
+      strip.setPixelColor(pix+offset, black);
+    }
   }
 }
 
