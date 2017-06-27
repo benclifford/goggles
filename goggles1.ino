@@ -307,24 +307,26 @@ void loop_amber_lr_pulse() {
 void loop_rainbow_on_off() {
 
   byte col = 0;
-  for(byte offset=0; offset<32; offset+=16) {
-    byte rot = nextRNGBits(4);
-    byte dir = nextRNGBit();
-    for(byte pix=0;pix<16;pix++) {
-      byte phys_pix = (pix + rot) % 16;
-      if(dir == 0) phys_pix = 15-phys_pix;
-      strip.setPixelColor(phys_pix+offset, primaryToColour(col));
-      col = (col + 1) % 6;
-      strip.show();
-      delay(166); // will give us one swizzle per second with 6 colours
-    }
-    for(byte pix=0;pix<16;pix++) {
+  while(1==1) {
+    for(byte offset=0; offset<32; offset+=16) {
+      byte rot = nextRNGBits(4);
+      byte dir = nextRNGBit();
+      for(byte pix=0;pix<16;pix++) {
+        byte phys_pix = (pix + rot) % 16;
+        if(dir == 0) phys_pix = 15-phys_pix;
+        strip.setPixelColor(phys_pix+offset, primaryToColour(col));
+        col = (col + 1) % 6;
+        strip.show();
+        delay(166); // will give us one swizzle per second with 6 colours
+      }
+      for(byte pix=0;pix<16;pix++) {
       
-      byte phys_pix = (pix + rot) % 16;
-      if(dir == 0) phys_pix = 15-phys_pix;
-      strip.setPixelColor(phys_pix+offset, black);
-      strip.show();
-      delay(166);
+        byte phys_pix = (pix + rot) % 16;
+        if(dir == 0) phys_pix = 15-phys_pix;
+        strip.setPixelColor(phys_pix+offset, black);
+        strip.show();
+        delay(166);
+      }
     }
   }
 }
