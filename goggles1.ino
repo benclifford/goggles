@@ -16,6 +16,8 @@ int mode=0;
 
 uint16_t prng_register;
 
+#define black strip.Color(0,0,0)
+
 void setup() {
   // put your setup code here, to run once:
   // This is for Trinket 5V 16MHz, you can remove these three lines if you are not using a Trinket
@@ -107,7 +109,6 @@ void loop_slow_primary_fill() {
 }
 
 void loop_white_flash() {
-  uint32_t black = strip.Color(0,0,0);
   uint32_t white = strip.Color(255,255,255);
   setAllPixels(black);
   strip.show();
@@ -118,7 +119,6 @@ void loop_white_flash() {
 }
 
 void loop_green_swirl() {
-  uint32_t black = strip.Color(0,0,0);
   
   for(byte start=0; start<16; start++) {
     setAllPixels(black);
@@ -156,7 +156,6 @@ void loop_pulse_lr_colours() {
 void loop_police() {
 
   int phase=0;
-  uint32_t black = strip.Color(0,0,0); 
   uint32_t intercol = strip.Color(0,0,32);
 
   while(1 == 1){
@@ -215,7 +214,6 @@ void loop_police() {
 // what will drive the first side to rotate.
 void loop_prng() {
 
-  uint32_t black = strip.Color(0,0,0);
   uint32_t red = strip.Color(255,0,0);
   uint32_t green = strip.Color(0,255,0);
   
@@ -310,7 +308,6 @@ void loop_amber_lr_pulse() {
       delay(120);
     }
     for(byte pix=0; pix<16; pix++) {
-      uint32_t black = strip.Color(0,0,0);
       strip.setPixelColor(pix+offset, black);
     }
   }
@@ -331,7 +328,7 @@ void loop_rainbow_on_off() {
       delay(166); // will give us one swizzle per second with 6 colours
     }
     for(byte pix=0;pix<16;pix++) {
-      uint32_t black = strip.Color(0,0,0);
+      
       byte phys_pix = (pix + rot) % 16;
       if(dir == 0) phys_pix = 15-phys_pix;
       strip.setPixelColor(phys_pix+offset, black);
