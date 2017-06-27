@@ -301,6 +301,8 @@ void loop_amber_lr_pulse() {
     for(byte pix=0; pix<16; pix++) {
       strip.setPixelColor(pix+offset, black);
     }
+    strip.show();
+    delay(200);
   }
 }
 
