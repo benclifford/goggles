@@ -138,9 +138,9 @@ void loop_green_swirl() {
 
 void loop_pulse_lr_colours() {
 
-  for(byte level=0;level < 8; level++) {
-    byte up = intpow(2, level);
-    byte down = intpow(2, 7-level);
+  for(byte level=0;level < 8*8; level++) {
+    byte up = twopow(level);
+    byte down = twopow(63-level);
     uint32_t left = strip.Color(0,up,down);
     uint32_t right = strip.Color(up,down,0);
     for(byte pix=0; pix<16; pix++) {
@@ -150,7 +150,7 @@ void loop_pulse_lr_colours() {
       strip.setPixelColor(pix, right);
     }
     strip.show();
-    delay(200);
+    delay(25);
   }
 }
 
@@ -280,24 +280,24 @@ void loop_rainbow() {
 
 void loop_amber_lr_pulse() {
   for(byte offset=0; offset < 32; offset +=16) {
-    for(byte level=1;level < 8; level++) {
-      byte up = intpow(2, level);
-      uint32_t left = strip.Color(up,up/2,0);
+    for(byte level=0;level < 8*8; level++) {
+      byte up = twopow(level);
+      uint32_t left = strip.Color(up,up,0);
       for(byte pix=0; pix<16; pix++) {
         strip.setPixelColor(pix+offset, left);
       }
       strip.show();
-      delay(80);
+      delay(10);
     }
     delay(200);
-    for(byte level=8;level > 1; level--) {
-      byte up = intpow(2, level-1);
-      uint32_t left = strip.Color(up,up/2,0);
+    for(byte level=8*8;level > 0; level--) {
+      byte up = twopow(level);
+      uint32_t left = strip.Color(up,up,0);
       for(byte pix=0; pix<16; pix++) {
         strip.setPixelColor(pix+offset, left);
       }
       strip.show();
-      delay(120);
+      delay(15);
     }
     for(byte pix=0; pix<16; pix++) {
       strip.setPixelColor(pix+offset, black);
@@ -306,7 +306,6 @@ void loop_amber_lr_pulse() {
     delay(200);
   }
 }
-
 void loop_rainbow_on_off() {
 
   byte col = 0;
@@ -364,6 +363,23 @@ byte intpow(byte e, byte n) {
   }
   return v; 
 }
+
+// n is a number between 0 .. 63
+// so 6 bits
+// use first 3 bits as exponent
+// and second 3 bits as linear filler?
+uint8_t twopow(uint8_t n) {
+  uint8_t v = 1;
+  uint8_t ex = (n & 0x38) >> 3;
+  uint8_t fill = n & 0x07;
+  v <<= ex;
+  if(ex >= 3) {
+    fill <<= ex - 3;
+    v = v | fill;
+  }
+  return v;
+}
+
 
 void setPixelMirror(byte pix, uint32_t colour) {
   strip.setPixelColor(pix, colour);
