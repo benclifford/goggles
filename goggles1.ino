@@ -47,6 +47,7 @@ void loop() {
     case 6: loop_campfire(); break;
     case 7: loop_rainbow(); break;
     case 8: loop_amber_lr_pulse(); break;
+    case 9: loop_rainbow_on_off(); break;
     default: mode=0;
              EEPROM.write(0, 1);
       break;
@@ -311,6 +312,31 @@ void loop_amber_lr_pulse() {
     for(byte pix=0; pix<16; pix++) {
       uint32_t black = strip.Color(0,0,0);
       strip.setPixelColor(pix+offset, black);
+    }
+  }
+}
+
+void loop_rainbow_on_off() {
+
+  byte col = 0;
+  for(byte offset=0; offset<32; offset+=16) {
+    byte rot = nextRNGByte() % 16;
+    byte dir = nextRNGBit();
+    for(byte pix=0;pix<16;pix++) {
+      byte phys_pix = (pix + rot) % 16;
+      if(dir == 0) phys_pix = 15-phys_pix;
+      strip.setPixelColor(phys_pix+offset, primaryToColour(col));
+      col = (col + 1) % 6;
+      strip.show();
+      delay(166); // will give us one swizzle per second with 6 colours
+    }
+    for(byte pix=0;pix<16;pix++) {
+      uint32_t black = strip.Color(0,0,0);
+      byte phys_pix = (pix + rot) % 16;
+      if(dir == 0) phys_pix = 15-phys_pix;
+      strip.setPixelColor(phys_pix+offset, black);
+      strip.show();
+      delay(166);
     }
   }
 }
