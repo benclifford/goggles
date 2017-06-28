@@ -154,40 +154,38 @@ void loop_pulse_lr_colours() {
   }
 }
 
+#define POLICE_BLUE strip.Color(0,0,255)
+#define POLICE_AMBER strip.Color(255,64,0)
+#define POLICE_INTERCOL strip.Color(0,0,32)
+
 void loop_police() {
 
   uint16_t phase=0;
-  uint32_t intercol = strip.Color(0,0,32);
-
   while(1 == 1){
     byte rot = phase / (6); // needs to be a multiple of 6 so that
                               // rotations do not happen out of phase
                               // with the amber dots
-    uint32_t blue = strip.Color(0,0,255); // TODO modulate
     uint32_t lblue;
     uint32_t rblue;
-    if((phase / 8) % 2 == 0) { lblue = blue; rblue = black; }
-       else {lblue = black; rblue = blue; }
+    if((phase / 8) % 2 == 0) { lblue = POLICE_BLUE; rblue = black; }
+       else {lblue = black; rblue = POLICE_BLUE; }
     
     for(byte pixel = 0; pixel < 8; pixel++) {
       strip.setPixelColor((pixel + rot) % 16, lblue);
       strip.setPixelColor(31 - (pixel + rot) % 16, rblue);
     }
-    setPixelMirror((8+rot) % 16, intercol);
-
-    uint32_t amber = strip.Color(255, 64, 0);
+    setPixelMirror((8+rot) % 16, POLICE_INTERCOL);
     
     for(byte pixel = 9; pixel < 15; pixel++) {
       uint32_t thisamber;
       if((5- (phase) % 6) == (pixel-9)) {
-        thisamber = amber; 
+        thisamber = POLICE_AMBER; 
       } else {
         thisamber = black;
       }
       setPixelMirror((pixel + rot) % 16, thisamber);
     }
-    setPixelMirror((15 + rot) % 16, intercol);
-
+    setPixelMirror((15 + rot) % 16, POLICE_INTERCOL);
 
     // render and advance
     // this needs to be a common multiple of all relevant phases
