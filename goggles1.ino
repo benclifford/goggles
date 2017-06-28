@@ -366,8 +366,8 @@ byte intpow(byte e, byte n) {
 
 // n is a number between 0 .. 63
 // so 6 bits
-// use first 3 bits as exponent
-// and second 3 bits as linear filler?
+// use highest 3 bits as exponent
+// and lowest 3 bits as linear filler
 uint8_t twopow(uint8_t n) {
   uint8_t v = 1;
   uint8_t ex = (n & 0x38) >> 3;
@@ -375,8 +375,10 @@ uint8_t twopow(uint8_t n) {
   v <<= ex;
   if(ex >= 3) {
     fill <<= ex - 3;
-    v = v | fill;
+  } else { // ex < 3 
+    fill >>= -(ex - 3);
   }
+  v = v | fill;
   return v;
 }
 
