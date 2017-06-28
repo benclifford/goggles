@@ -280,9 +280,9 @@ void loop_rainbow() {
 
 void loop_amber_lr_pulse() {
   for(byte offset=0; offset < 32; offset +=16) {
-    for(byte level=0;level < 8*8; level++) {
+    for(byte level=8;level < 8*8; level++) {
       byte up = twopow(level);
-      uint32_t left = strip.Color(up,up,0);
+      uint32_t left = strip.Color(up,up/2,0);
       for(byte pix=0; pix<16; pix++) {
         strip.setPixelColor(pix+offset, left);
       }
@@ -290,9 +290,9 @@ void loop_amber_lr_pulse() {
       delay(10);
     }
     delay(200);
-    for(byte level=8*8;level > 0; level--) {
+    for(byte level=8*8-1;level > 8; level--) {
       byte up = twopow(level);
-      uint32_t left = strip.Color(up,up,0);
+      uint32_t left = strip.Color(up,up/2,0);
       for(byte pix=0; pix<16; pix++) {
         strip.setPixelColor(pix+offset, left);
       }
@@ -306,6 +306,7 @@ void loop_amber_lr_pulse() {
     delay(200);
   }
 }
+
 void loop_rainbow_on_off() {
 
   byte col = 0;
