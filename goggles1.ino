@@ -203,10 +203,11 @@ void loop_police() {
 // based on the result of generating one random bit
 // every time period. This one bit generation is also
 // what will drive the first side to rotate.
-void loop_prng() {
 
-  uint32_t red = strip.Color(255,0,0);
-  uint32_t green = strip.Color(0,255,0);
+#define PRNG_RED strip.Color(255,0,0)
+#define PRNG_GREEN strip.Color(0,255,0)
+
+void loop_prng() {
   
   setAllPixels(black);
   strip.show();
@@ -215,14 +216,14 @@ void loop_prng() {
     for(byte pix=0; pix<16; pix++) {
       byte b = nextRNGBit();
       if(b == 1) {
-        strip.setPixelColor(pix, red);
+        strip.setPixelColor(pix, PRNG_RED);
       } else {
         strip.setPixelColor(pix, black);
       }
       for(byte lsfr_pix=0; lsfr_pix<16; lsfr_pix++) {
         byte lsfr_b = (prng_register >> lsfr_pix) & 1;
         if(lsfr_b == 1) {
-          strip.setPixelColor(lsfr_pix + 16, green);
+          strip.setPixelColor(lsfr_pix + 16, PRNG_GREEN);
         } else {
           strip.setPixelColor(lsfr_pix + 16, black);
         }
