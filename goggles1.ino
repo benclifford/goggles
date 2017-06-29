@@ -54,7 +54,7 @@ void loop() {
     case 10: loop_colour_swizz(); break;
     default: mode=0;
              EEPROM.write(0, 1);
-      break;
+             break;
   }
 }
 
