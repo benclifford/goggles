@@ -144,11 +144,8 @@ void loop_pulse_lr_colours() {
     byte down = twopow(63-level);
     uint32_t left = strip.Color(0,up,down);
     uint32_t right = strip.Color(up,down,0);
-    for(byte pix=0; pix<16; pix++) {
-      strip.setPixelColor(pix, left);
-    }
-    for(byte pix=16; pix<32; pix++) {
-      strip.setPixelColor(pix, right);
+    for(byte pix=0; pix<32; pix++) {
+      strip.setPixelColor(pix, pix < 16 ? left : right);
     }
     strip.show();
     delay(25);
