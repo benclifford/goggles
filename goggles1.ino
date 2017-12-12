@@ -372,24 +372,21 @@ void loop_rainbow_on_off() {
   }
 }
 
+
+uint32_t colour_of_swizz(byte offset, byte destpix) {
+  byte pix = (destpix - offset) & 0x0F;
+  if(pix >= 0 && pix < 3) return primaryToColour(1);
+  if(pix >= 4 && pix < 7) return primaryToColour(0);
+  if(pix >= 8 && pix < 11) return primaryToColour(3);
+  if(pix >=12 && pix < 15) return primaryToColour(4);
+  return black;
+}
+
 void loop_colour_swizz()  {
   for(byte offset=0; offset<16; offset++) {
-    for(byte pix = 0; pix < 3; pix++) {
-      setPixelMirror((offset + pix) % 16, primaryToColour(1));
+    for(byte pix = 0; pix < 16; pix++) {
+      setPixelMirror(pix,colour_of_swizz(offset, pix));
     }
-    setPixelMirror((offset + 3) % 16, black);
-    for(byte pix = 4; pix < 7; pix++) {
-      setPixelMirror((offset + pix) % 16, primaryToColour(0));
-    }
-    setPixelMirror((offset + 7) % 16, black);
-    for(byte pix = 8; pix < 11; pix++) {
-      setPixelMirror((offset + pix) % 16, primaryToColour(3));
-    }
-    setPixelMirror((offset + 11) % 16, black);
-    for(byte pix = 12; pix < 15; pix++) {
-      setPixelMirror((offset + pix) % 16, primaryToColour(4));
-    }
-    setPixelMirror((offset + 15) % 16, black);
     strip.show();
     delay(100);
   }
