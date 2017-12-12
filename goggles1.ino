@@ -134,8 +134,8 @@ uint32_t green_swirl_colour(byte start, byte pix) {
 
 void loop_green_swirl() {
   for(byte start=0; start<16; start++) {
-    for(byte off=0; off<16; off++) {
-      setPixelMirror(off, green_swirl_colour(start, off));
+    for(byte pix=0; pix<16; pix++) {
+      setPixelMirror(pix, green_swirl_colour(start, pix));
     }
     strip.show();
     delay(200);
