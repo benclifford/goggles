@@ -159,34 +159,75 @@ void loop_pulse_lr_colours() {
 #define POLICE_AMBER strip.Color(255,64,0)
 #define POLICE_INTERCOL strip.Color(0,0,32)
 
+byte rotate_offset(uint16_t phase) {
+  // needs to be a multiple of 6 so that
+  // rotations do not happen out of phase
+  // with the amber dots
+  return phase/6;
+}
+
+uint32_t lbluex(uint16_t phase) {
+  if((phase / 8) % 2 == 0) {
+    return POLICE_BLUE;
+  } else {
+    return black;
+  }
+}
+
+uint32_t rbluex(uint16_t phase) {
+  if((phase / 8) % 2 == 0) {
+    return black;
+  } else {
+    return POLICE_BLUE;
+  }
+}
+
+uint32_t unrotated_police_colour(uint32_t (*bluecol)(uint16_t), uint16_t phase, byte pixel) {
+  if(pixel >=0 && pixel < 8) return bluecol(phase); //pixel = 0 .. 7
+  if(pixel == 8) return POLICE_INTERCOL;
+
+  if(pixel > 8 && pixel <= 15) {
+    if((5 - phase % 6) == (pixel - 9)) {
+      return POLICE_AMBER;
+    } else {
+      return black;
+    }
+  }
+
+  // if this if is up by the other POLICE_INTERCOL,
+  // the code uses 4 bytes extra (at time of writing)
+  if(pixel == 15) return POLICE_INTERCOL;
+}
+
+byte rotate_pixel(uint32_t phase, byte pixel) {
+  return (pixel - rotate_offset(phase)) & 0x0F;
+}
+
+uint32_t x_police_colour(uint32_t (*bluecol)(uint16_t), uint16_t phase, byte pixel) {
+  return unrotated_police_colour(bluecol, phase, rotate_pixel(phase, pixel));
+}
+
+uint32_t left_police_colour(uint16_t phase, byte pixel) {
+  return x_police_colour(lbluex, phase, pixel);
+}
+
+uint32_t right_police_colour(uint16_t phase, byte pixel) {
+  return x_police_colour(rbluex, phase, 31-pixel);
+}
+
+uint32_t police_colour(uint16_t phase, byte pixel) {
+  if(pixel < 16) return left_police_colour(phase, pixel);
+  if(pixel >= 16) return right_police_colour(phase, pixel);
+}
+
 void loop_police() {
 
   uint16_t phase=0;
   while(1 == 1){
-    byte rot = phase / (6); // needs to be a multiple of 6 so that
-                              // rotations do not happen out of phase
-                              // with the amber dots
-    uint32_t lblue;
-    uint32_t rblue;
-    if((phase / 8) % 2 == 0) { lblue = POLICE_BLUE; rblue = black; }
-       else {lblue = black; rblue = POLICE_BLUE; }
-    
-    for(byte pixel = 0; pixel < 8; pixel++) {
-      strip.setPixelColor((pixel + rot) % 16, lblue);
-      strip.setPixelColor(31 - (pixel + rot) % 16, rblue);
+
+    for(byte pixel = 0; pixel < 32; pixel++) {
+      strip.setPixelColor(pixel, police_colour(phase, pixel));
     }
-    setPixelMirror((8+rot) % 16, POLICE_INTERCOL);
-    
-    for(byte pixel = 9; pixel < 15; pixel++) {
-      uint32_t thisamber;
-      if((5- (phase) % 6) == (pixel-9)) {
-        thisamber = POLICE_AMBER; 
-      } else {
-        thisamber = black;
-      }
-      setPixelMirror((pixel + rot) % 16, thisamber);
-    }
-    setPixelMirror((15 + rot) % 16, POLICE_INTERCOL);
 
     // render and advance
     // this needs to be a common multiple of all relevant phases
