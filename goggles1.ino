@@ -120,17 +120,22 @@ void loop_white_flash() {
   delay(500);
 }
 
-void loop_green_swirl() {
-  
-  for(byte start=0; start<16; start++) {
-    setAllPixels(black);
 
-    for(byte off=0; off<7; off++) {
-      // TODO: I think pow uses quite a lot of ROM because it is doing floats
-      // and actually we need something much less accurate.
-      byte amt = intpow(2, off+1);
-      uint32_t green = strip.Color(0,amt,0);
-      setPixelMirror((start + off) % 16, green);
+uint32_t green_swirl_colour(byte start, byte pix) {
+  byte off = (pix - start) & 0x0F;
+  if(off < 7) { 
+    byte amt = intpow(2, off+1);
+    uint32_t green = strip.Color(0,amt,0);
+    return green;
+  } else {
+    return black;
+  }
+}
+
+void loop_green_swirl() {
+  for(byte start=0; start<16; start++) {
+    for(byte off=0; off<16; off++) {
+      setPixelMirror(off, green_swirl_colour(start, off));
     }
     strip.show();
     delay(200);
