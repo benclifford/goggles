@@ -1,0 +1,1 @@
+sudo /arduino-1.8.5/hardware/tools/avr/bin/avrdude -c usbtiny -p attiny85 -C /arduino-1.8.5/hardware/arduino/avr/bootloaders/gemma/avrdude.conf -U flash:w:/tmp/arduino-sketch-88E2FAE0BBA9C3138BA22955CB914C91/goggles1.ino.hex
