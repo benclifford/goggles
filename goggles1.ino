@@ -186,10 +186,16 @@ uint32_t rbluex(uint16_t phase) {
 
 uint32_t unrotated_police_colour(uint32_t (*bluecol)(uint16_t), uint16_t phase, byte pixel) {
   if(pixel >=0 && pixel < 8) return bluecol(phase); //pixel = 0 .. 7
-  if(pixel == 8) return POLICE_INTERCOL;
+  // if(pixel == 8) return POLICE_INTERCOL;
 
-  if(pixel > 8 && pixel <= 15) {
-    if((5 - phase % 6) == (pixel - 9)) {
+  if(pixel >= 8 && pixel <= 15) {
+
+    byte amber_phase = 7 - phase % 8;
+
+    if(amber_phase == (pixel - 9)) {
+      return POLICE_AMBER;
+    }
+    else if(amber_phase == (pixel - 8)) {
       return POLICE_AMBER;
     } else {
       return black;
@@ -198,7 +204,7 @@ uint32_t unrotated_police_colour(uint32_t (*bluecol)(uint16_t), uint16_t phase, 
 
   // if this if is up by the other POLICE_INTERCOL,
   // the code uses 4 bytes extra (at time of writing)
-  if(pixel == 15) return POLICE_INTERCOL;
+  // if(pixel == 15) return POLICE_INTERCOL;
 }
 
 byte rotate_pixel(uint32_t phase, byte pixel) {
